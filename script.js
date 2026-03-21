@@ -62,13 +62,6 @@ function getUserInput() {
 
   const displayValue = document.querySelector("#display");
 
-  const addBtn = document.querySelector("#add");
-  const subtractBtn = document.querySelector("#subtract");
-  const multiplyBtn = document.querySelector("#multiply");
-  const divisionBtn = document.querySelector("#division");
-
-  let operatorBtnArray = [addBtn, subtractBtn, multiplyBtn, divisionBtn];
-
   let num = +displayValue.textContent;
 
   numBtnArray.forEach((btn) => {
@@ -77,6 +70,21 @@ function getUserInput() {
       displayValue.textContent = "";
       displayValue.textContent = num;
     });
+  });
+
+  const addBtn = document.querySelector("#add");
+  const subtractBtn = document.querySelector("#subtract");
+  const multiplyBtn = document.querySelector("#multiply");
+  const divisionBtn = document.querySelector("#division");
+
+  let operatorBtnArray = [addBtn, subtractBtn, multiplyBtn, divisionBtn];
+
+  const deleteBtn = document.querySelector("#delete");
+
+  deleteBtn.addEventListener("click", () => {
+    num = Math.floor(num / 10);
+    displayValue.textContent = "";
+    displayValue.textContent = num;
   });
 }
 
