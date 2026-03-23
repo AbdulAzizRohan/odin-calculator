@@ -1,0 +1,34 @@
+.button {
+  font-family: "CodeNewRoman Nerd Font", "Courier New", Courier, monospace;
+  font-size: 3rem;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 2rem;
+  margin: 1rem;
+  text-align: center;
+}
+
+.buttons {
+  width: 550px;
+  padding: 20px;
+  margin: 20px auto;
+  border: 2px solid black;
+  border-radius: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#display {
+  font-family: "CodeNewRoman Nerd Font", "Courier New", Courier, monospace;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: right;
+  height: 100px;
+  width: 550px;
+  border: 2px solid black;
+  border-radius: 30px;
+  padding: 20px;
+  margin: 20px auto;
+  background-color: #eaf0ee;
+}
