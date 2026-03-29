@@ -1,3 +1,7 @@
+// To-Dos:
+// 1. Fix the display so that large numbers do not cross the display.
+// 2. `delete` button functionality for fraction numbers. Done!
+
 let num1, num2, operator;
 
 function add(num1, num2) {
@@ -71,11 +75,16 @@ function getUserInput() {
         isOperatorBtnPressed = false;
         isEqualBtnPressed = false;
         currentNumber = 0;
+        displayValue.textContent = "";
       }
 
-      currentNumber = currentNumber * 10 + +btn.textContent;
-      displayValue.textContent = "";
-      displayValue.textContent = currentNumber;
+      if (displayValue.textContent === "0") {
+        displayValue.textContent = `${btn.textContent}`;
+      } else {
+        displayValue.textContent = `${displayValue.textContent}${btn.textContent}`;
+      }
+
+      currentNumber = +displayValue.textContent;
     });
   });
 
@@ -124,6 +133,7 @@ function getUserInput() {
 
       previousOperator = operatorArray[index];
       isOperatorBtnPressed = true;
+      digitsAfterDecimal = 0;
       displayValue.textContent = num1;
       currentNumber = num1;
     });
@@ -140,14 +150,14 @@ function getUserInput() {
     displayValue.textContent = num1;
     currentNumber = num1;
     isFirstOperation = true;
+    digitsAfterDecimal = 0;
   });
 
   const deleteBtn = document.querySelector("#delete");
 
   deleteBtn.addEventListener("click", () => {
-    currentNumber = Math.floor(currentNumber / 10);
-    displayValue.textContent = "";
-    displayValue.textContent = currentNumber;
+    displayValue.textContent = displayValue.textContent.slice(0, -1);
+    currentNumber = +displayValue.textContent;
   });
 
   const ceBtn = document.querySelector("#CE");
@@ -156,6 +166,7 @@ function getUserInput() {
     currentNumber = 0;
     displayValue.textContent = "";
     displayValue.textContent = currentNumber;
+    digitsAfterDecimal = 0;
   });
 
   const acBtn = document.querySelector("#AC");
@@ -167,9 +178,21 @@ function getUserInput() {
     num2 = 0;
     displayValue.textContent = "";
     displayValue.textContent = currentNumber;
+
     isEqualBtnPressed = false;
     isOperatorBtnPressed = false;
     isFirstOperation = true;
+    digitsAfterDecimal = 0;
+  });
+
+  const decimalBtn = document.querySelector("#decimal");
+
+  decimalBtn.addEventListener("click", () => {
+    let isDecimalBtnPressed = displayValue.textContent.indexOf(".");
+
+    if (isDecimalBtnPressed === -1) {
+      displayValue.textContent = `${currentNumber}.`;
+    }
   });
 }
 
