@@ -8,8 +8,13 @@
   text-align: center;
 }
 
+.buttons,
+#display {
+  width: 80vw;
+  max-width: 550px;
+}
+
 .buttons {
-  width: 550px;
   padding: 20px;
   margin: 20px auto;
   border: 2px solid black;
@@ -25,7 +30,6 @@
   font-weight: bold;
   text-align: right;
   height: 100px;
-  width: 550px;
   border: 2px solid black;
   border-radius: 30px;
   padding: 20px;
@@ -36,3 +40,7 @@
 #delete {
   font-size: 2.5rem;
 }
+
+/* #equal { */
+/*   flex-grow: 1; */
+/* } */
