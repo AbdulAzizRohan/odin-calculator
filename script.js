@@ -1,6 +1,8 @@
 // To-Dos:
 // 1. Fix the display so that large numbers do not cross the display.
-// 2. `delete` button functionality for fraction numbers. Done!
+// 2. Fix `delete` button functionality for fraction numbers. Done!
+// 3. Fix `equalBtn` issue when pressing with a single number. Done!
+// 4. Fix calculating when not supplying with two numbers. Done!
 
 let num1, num2, operator;
 
@@ -71,11 +73,15 @@ function getUserInput() {
   numBtnArray.forEach((btn) => {
     btn.addEventListener("click", () => {
       // when new number is being given input after any operator
-      if (isOperatorBtnPressed || isEqualBtnPressed) {
-        isOperatorBtnPressed = false;
-        isEqualBtnPressed = false;
+      if (isOperatorBtnPressed) {
         currentNumber = 0;
         displayValue.textContent = "";
+      }
+
+      if (isEqualBtnPressed) {
+        displayValue.textContent = "";
+        num1 = 0;
+        num2 = null;
       }
 
       if (displayValue.textContent === "0") {
@@ -85,6 +91,10 @@ function getUserInput() {
       }
 
       currentNumber = +displayValue.textContent;
+      num2 = currentNumber;
+
+      isOperatorBtnPressed = false;
+      isEqualBtnPressed = false;
     });
   });
 
@@ -104,38 +114,32 @@ function getUserInput() {
   let operatorBtnArray = [addBtn, subtractBtn, multiplyBtn, divideBtn];
 
   let num1 = 0;
-  let num2 = 0;
+  let num2 = null;
   let operatorArray = ["+", "-", "*", "/"];
   let previousOperator = operatorArray[0];
-
-  // calculation pseudocode:
-  // n1 = 0, n2 = 0
-  // if operator is clicked then:
-  //   n2 = currentNumber
-  //   n1 = operate(n1, n2, operator)
 
   // tracking for updating display after the operator button is pressed
   let isOperatorBtnPressed = false;
 
   for (let index = 0; index < operatorBtnArray.length; index++) {
     operatorBtnArray[index].addEventListener("click", () => {
-      if (isEqualBtnPressed || isFirstOperation) {
-        previousOperator = "+";
-        num1 = 0;
-        num2 = currentNumber;
-        num1 = operate(num1, num2, previousOperator);
+      if (isEqualBtnPressed) {
+        num1 = +displayValue.textContent;
+        num2 = null;
         isEqualBtnPressed = false;
-        isFirstOperation = false;
-      } else {
-        num2 = currentNumber;
-        num1 = operate(num1, num2, previousOperator);
       }
 
-      previousOperator = operatorArray[index];
+      if (num2 !== null) {
+        num1 = operate(num1, num2, previousOperator);
+        num2 = null;
+        displayValue.textContent = num1;
+        previousOperator = operatorArray[index];
+      } else if (num2 === null) {
+        previousOperator = operatorArray[index];
+      }
+
       isOperatorBtnPressed = true;
-      digitsAfterDecimal = 0;
-      displayValue.textContent = num1;
-      currentNumber = num1;
+      isFirstOperation = false;
     });
   }
 
@@ -144,13 +148,22 @@ function getUserInput() {
   let isEqualBtnPressed = false;
 
   equalBtn.addEventListener("click", () => {
-    num2 = currentNumber;
-    num1 = operate(num1, num2, previousOperator);
-    isEqualBtnPressed = true;
-    displayValue.textContent = num1;
-    currentNumber = num1;
-    isFirstOperation = true;
-    digitsAfterDecimal = 0;
+    // handling the situation when an operator is pressed immediately after a number
+    if (isOperatorBtnPressed) {
+      num2 = num1;
+      isOperatorBtnPressed = false;
+    }
+
+    if (!isFirstOperation) {
+      // storing num2 to use when "=" is pressed again
+      let temp = num2;
+      num1 = operate(num1, num2, previousOperator);
+      num2 = temp;
+
+      isEqualBtnPressed = true;
+      displayValue.textContent = num1;
+      currentNumber = num1;
+    }
   });
 
   const deleteBtn = document.querySelector("#delete");
@@ -166,23 +179,22 @@ function getUserInput() {
     currentNumber = 0;
     displayValue.textContent = "";
     displayValue.textContent = currentNumber;
-    digitsAfterDecimal = 0;
   });
 
   const acBtn = document.querySelector("#AC");
-  let isFirstOperation = false;
+  let isFirstOperation = true;
 
   acBtn.addEventListener("click", () => {
     currentNumber = 0;
     num1 = 0;
-    num2 = 0;
+    num2 = null;
+    previousOperator = operatorArray[0];
     displayValue.textContent = "";
     displayValue.textContent = currentNumber;
 
     isEqualBtnPressed = false;
     isOperatorBtnPressed = false;
     isFirstOperation = true;
-    digitsAfterDecimal = 0;
   });
 
   const decimalBtn = document.querySelector("#decimal");
