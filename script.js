@@ -1,5 +1,5 @@
 // To-Dos:
-// 1. Fix the display so that large numbers do not cross the display.
+// 1. Fix the display so that large numbers do not cross the display. Done!
 // 2. Fix `delete` button functionality for fraction numbers. Done!
 // 3. Fix `equalBtn` issue when pressing with a single number. Done!
 // 4. Fix calculating when not supplying with two numbers. Done!
@@ -68,13 +68,10 @@ function getUserInput() {
 
   const displayValue = document.querySelector("#display");
 
-  let currentNumber = +displayValue.textContent;
-
   numBtnArray.forEach((btn) => {
     btn.addEventListener("click", () => {
       // when new number is being given input after any operator
       if (isOperatorBtnPressed) {
-        currentNumber = 0;
         displayValue.textContent = "";
       }
 
@@ -90,8 +87,7 @@ function getUserInput() {
         displayValue.textContent = `${displayValue.textContent}${btn.textContent}`;
       }
 
-      currentNumber = +displayValue.textContent;
-      num2 = currentNumber;
+      num2 = +displayValue.textContent;
 
       isOperatorBtnPressed = false;
       isEqualBtnPressed = false;
@@ -101,9 +97,13 @@ function getUserInput() {
   const plusMinusBTn = document.querySelector("#plus-minus");
 
   plusMinusBTn.addEventListener("click", () => {
-    currentNumber = -1 * currentNumber;
-    displayValue.textContent = "";
-    displayValue.textContent = currentNumber;
+    if (displayValue.textContent.includes("-")) {
+      displayValue.textContent = displayValue.textContent.slice(1);
+    } else {
+      displayValue.textContent = `-${displayValue.textContent}`;
+    }
+
+    num2 = +displayValue.textContent;
   });
 
   const addBtn = document.querySelector("#add");
@@ -132,7 +132,8 @@ function getUserInput() {
       if (num2 !== null) {
         num1 = operate(num1, num2, previousOperator);
         num2 = null;
-        displayValue.textContent = num1;
+
+        displayValue.textContent = +toFixedScientific(num1.toString());
         previousOperator = operatorArray[index];
       } else if (num2 === null) {
         previousOperator = operatorArray[index];
@@ -161,8 +162,7 @@ function getUserInput() {
       num2 = temp;
 
       isEqualBtnPressed = true;
-      displayValue.textContent = num1;
-      currentNumber = num1;
+      displayValue.textContent = +toFixedScientific(num1.toString());
     }
   });
 
@@ -170,27 +170,24 @@ function getUserInput() {
 
   deleteBtn.addEventListener("click", () => {
     displayValue.textContent = displayValue.textContent.slice(0, -1);
-    currentNumber = +displayValue.textContent;
   });
 
   const ceBtn = document.querySelector("#CE");
 
   ceBtn.addEventListener("click", () => {
-    currentNumber = 0;
     displayValue.textContent = "";
-    displayValue.textContent = currentNumber;
+    displayValue.textContent = "0";
   });
 
   const acBtn = document.querySelector("#AC");
   let isFirstOperation = true;
 
   acBtn.addEventListener("click", () => {
-    currentNumber = 0;
     num1 = 0;
     num2 = null;
     previousOperator = operatorArray[0];
     displayValue.textContent = "";
-    displayValue.textContent = currentNumber;
+    displayValue.textContent = "0";
 
     isEqualBtnPressed = false;
     isOperatorBtnPressed = false;
@@ -200,12 +197,32 @@ function getUserInput() {
   const decimalBtn = document.querySelector("#decimal");
 
   decimalBtn.addEventListener("click", () => {
-    let isDecimalBtnPressed = displayValue.textContent.indexOf(".");
-
-    if (isDecimalBtnPressed === -1) {
-      displayValue.textContent = `${currentNumber}.`;
+    if (isOperatorBtnPressed) {
+      displayValue.textContent = "0.";
+      isOperatorBtnPressed = false;
+    } else if (isEqualBtnPressed) {
+      displayValue.textContent = "0.";
+      num1 = 0;
+      num2 = null;
+      isEqualBtnPressed = false;
+    } else if (!displayValue.textContent.includes(".")) {
+      displayValue.textContent = `${displayValue.textContent}.`;
     }
   });
+
+  function toFixedScientific(numString) {
+    if (
+      numString.includes("e") &&
+      numString.includes(".") &&
+      numString.indexOf("e") - numString.indexOf(".") - 1 > 8
+    ) {
+      numString =
+        numString.slice(0, numString.indexOf(".") + 8) +
+        numString.slice(numString.indexOf("e"));
+    }
+
+    return numString;
+  }
 }
 
 getUserInput();
