@@ -35,6 +35,7 @@
   padding: 20px;
   margin: 20px auto;
   background-color: #eaf0ee;
+  overflow-x: scroll;
 }
 
 #delete {
