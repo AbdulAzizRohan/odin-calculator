@@ -223,6 +223,86 @@ function getUserInput() {
 
     return numString;
   }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key >= "0" && e.key <= "9") {
+      // when new number is being given input after any operator
+      if (isOperatorBtnPressed) {
+        displayValue.textContent = "";
+      }
+
+      if (isEqualBtnPressed) {
+        displayValue.textContent = "";
+        num1 = 0;
+        num2 = null;
+      }
+
+      if (displayValue.textContent === "0") {
+        displayValue.textContent = `${e.key}`;
+      } else {
+        displayValue.textContent = `${displayValue.textContent}${e.key}`;
+      }
+
+      num2 = +displayValue.textContent;
+
+      isOperatorBtnPressed = false;
+      isEqualBtnPressed = false;
+    } else if (
+      e.key === "+" ||
+      e.key === "-" ||
+      e.key === "*" ||
+      e.key === "/"
+    ) {
+      if (isEqualBtnPressed) {
+        num1 = +displayValue.textContent;
+        num2 = null;
+        isEqualBtnPressed = false;
+      }
+
+      if (num2 !== null) {
+        num1 = operate(num1, num2, previousOperator);
+        num2 = null;
+
+        displayValue.textContent = +toFixedScientific(num1.toString());
+        previousOperator = e.key;
+      } else if (num2 === null) {
+        previousOperator = e.key;
+      }
+
+      isOperatorBtnPressed = true;
+      isFirstOperation = false;
+    } else if (e.key === ".") {
+      if (isOperatorBtnPressed) {
+        displayValue.textContent = "0.";
+        isOperatorBtnPressed = false;
+      } else if (isEqualBtnPressed) {
+        displayValue.textContent = "0.";
+        num1 = 0;
+        num2 = null;
+        isEqualBtnPressed = false;
+      } else if (!displayValue.textContent.includes(".")) {
+        displayValue.textContent = `${displayValue.textContent}.`;
+      }
+    } else if (e.key === "=" || e.key === "Enter") {
+      // handling the situation when an operator is pressed immediately after a number
+      if (isOperatorBtnPressed) {
+        num2 = num1;
+        isOperatorBtnPressed = false;
+      }
+
+      if (!isFirstOperation) {
+        // storing num2 to use when "=" is pressed again
+        let temp = num2;
+        num1 = operate(num1, num2, previousOperator);
+        num2 = temp;
+
+        isEqualBtnPressed = true;
+        displayValue.textContent = +toFixedScientific(num1.toString());
+      }
+    } else if (e.key === "Backspace") {
+      displayValue.textContent = displayValue.textContent.slice(0, -1);
+    }
+  });
 }
 
 getUserInput();
