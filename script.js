@@ -1,9 +1,3 @@
-// To-Dos:
-// 1. Fix the display so that large numbers do not cross the display. Done!
-// 2. Fix `delete` button functionality for fraction numbers. Done!
-// 3. Fix `equalBtn` issue when pressing with a single number. Done!
-// 4. Fix calculating when not supplying with two numbers. Done!
-
 let num1, num2, operator;
 
 function add(num1, num2) {
