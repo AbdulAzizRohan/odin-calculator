@@ -1,5 +1,4 @@
-This is a required project by [The Odin
-Project](https://www.theodinproject.com).
+This is a required project by [The Odin Project](https://www.theodinproject.com).
 
 To-dos:
 
